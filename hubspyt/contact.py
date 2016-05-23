@@ -1,14 +1,39 @@
-import json
+# -*- coding: utf-8 -*-
 from tools import Connection
 
+
 class Contact(object):
+    """
+    Permite crear/gestionar los contactos en Hubspot.
+
+    Parametros:
+        API-KEY
+    """
 
     def __init__(self, apikey_value):
         super(Contact, self).__init__()
         self.coneccion = Connection(apikey_value)
 
     def create(self, email, data=None):
-        xurl =  '/contacts/v1/contact/createOrUpdate/email/%s' % email
+        """
+        Metodo para crear contactos en la api de hubspot
+
+        Parametros:
+            email: email del nuevo contacto
+            data: disccionario con datos adicionales del contacto, ej
+                data = {
+                    'first_name': '',
+                    'last_name': '',
+                    'website': '',
+                    'company': '',
+                    'phone': '',
+                    'address': '',
+                    'city': '',
+                    'state': '',
+                    'zip': '',
+                }
+        """
+        xurl = '/contacts/v1/contact/createOrUpdate/email/%s' % email
         contact_dic = {
             "properties": [
                 {
@@ -57,9 +82,8 @@ class Contact(object):
         return response
         try:
             response_dic = response.json()
-            self.name = response_dic['properties']['name']['value']
-            self.description = response_dic['properties']['description']['value']
-            self.id = response_dic['companyId']
+            self.email = email
+            self.id = response_dic['vid']
+            return response_dic
         except:
-            pass
-        return response_dic
+            return None
